@@ -1,4 +1,6 @@
 package com.example.coroutines
+// 1 What is deffered
+// 2 What is Await
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -15,23 +17,29 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         Log.i(TAG, "onCreate: " + " Let's begin")
         runBlocking {
-            launch {
-                launch {
-                    delay(5000)
-                    Log.i(TAG, "onCreate: " + " coroutine ONE")
-                }
-               GlobalScope.launch {
-                    delay(1000)
-                    Log.i(TAG, "onCreate: " + " coroutine TWO")
 
+            val jobDeffered1: Deferred<Int> = async {
+                for(i in 0..20) {
+                    delay(500)
+                    Log.i(TAG, "onCreate: " + " coroutine ONE $i" + Thread.currentThread().name)
                 }
+                15
             }
-            Log.i(
-                TAG,
-                "onCreate: " + " Only when the children inside runBlocking complete, execution follows on this line"
-            )
+
+
+            val jobDeffered2: Deferred<Int> = async {
+                delay(50)
+                Log.i(TAG, "onCreate: " + " coroutine ONE" + Thread.currentThread().name)
+                5
+            }
+
+            var a=jobDeffered1.await()
+            var b=jobDeffered2.await()
+            Log.i(TAG, "onCreate: Adding a+b="+(a+b))
+
         }
-    }}
+        }
+    }
 
 
 
